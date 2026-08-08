@@ -136,7 +136,8 @@ To read a zipped file without decompressing it, use ```gzcat``` or ```zcat```.
 
 #### history, jobs
 To check your coding history, use ```history```, you can also limit the number of history you wanna check, use ```history -500``` to see the most recent 500 histories you coded.
-To check what jobs are running right now, use ```jobs```, and to put things to background/frontground, use ```bg``` or ```fg```.
+To check what jobs are running right now, use ```jobs```, and to put things to background/frontground, use ```bg``` or ```fg```. You can also put any job you want to background or frontground by using ```fg/bg %1```.
+
 ### Cancel/suspend/end command or input
 To cancel input/quote/command, press ```Ctrl C```.
 To suspend a job, press ```Ctrl Z```.
