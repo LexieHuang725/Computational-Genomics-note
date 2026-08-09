@@ -257,7 +257,7 @@ Now that we have created the files, we can go on with the practice sets:
    > Here is a program using bash also as an answer. This provides more clarity to verify if this file exists, and uses ```bash``` commands except ```awk``` command:
    > ```diff
    > #!/bin/bash
-   > +# Require exactly one command-line argument.+
+   > +# Require exactly one command-line argument.
    > if [ "$#" -ne 1 ]; then
    >   printf 'Usage: %s FASTQ_FILE\n' "$0" >&2
    >   exit 1
@@ -265,26 +265,26 @@ Now that we have created the files, we can go on with the practice sets:
    >
    > file="$1"
    > 
-   > +# Confirm that the supplied file exists.+
+   > +# Confirm that the supplied file exists.
    > if [ ! -f "$file" ]; then
    >   printf 'Error: file not found: %s\n' "$file" >&2
    >   exit 1
    > fi
    > 
-   > +# Count the lines.+
+   > +# Count the lines.
    > lines=$(wc -l < "$file")
    > 
-   > +# Check whether the line count is compatible with FASTQ format.+
+   > +# Check whether the line count is compatible with FASTQ format.
    > if [ $((lines % 4)) -ne 0 ]; then
    >   printf 'Warning: the line count is not divisible by 4.\n' >&2
    > fi
    > 
-   > +# Calculate the number of FASTQ records.+
+   > +# Calculate the number of FASTQ records.
    > reads=$((lines / 4))
-   > +# Obtain the first read identifier.+
+   > +# Obtain the first read identifier.
    > first_read=$(head -n 1 "$file")
    > 
-   > +# Obtain the length of the first sequence.+
+   > +# Obtain the length of the first sequence.
    > read_length=$(awk 'NR==2 {print length($0); exit}' "$file")
    >
    > +# Display the results.
