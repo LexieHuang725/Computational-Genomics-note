@@ -41,7 +41,7 @@ gzcat mini.fastq.gz
 Now that we have created the files, we can go on with the practice sets:
 ### Part A: Basic Exercises
 
-*1. List everything in the lesson01 directory.*
+*1. List everything in the lesson02 directory.*
 
 *2. List only files inside data.*
 
@@ -71,9 +71,9 @@ Now that we have created the files, we can go on with the practice sets:
 
 ---
 #### Answers:
-1. List everything in the lesson01 directory.
+1. List everything in the lesson02 directory.
    ```
-   ls -a lesson01
+   ls -a lesson02
    ```
 2. List only files inside data.
    ```
@@ -131,7 +131,7 @@ Now that we have created the files, we can go on with the practice sets:
     
 10. Copy mini.fastq into the lesson01 directory.
     ```
-    cp mini.fastq > lesson01
+    cp mini.fastq > lesson02
     ```
 11. Rename the copied file to tiny_backup.fastq.
     ```
@@ -141,7 +141,7 @@ Now that we have created the files, we can go on with the practice sets:
     
 12. Compare the original and copied files using diff.
     ```
-    diff mini.fastq lesson
+    diff tiny_backup.fastq lesson02/mini.fastq
     ```
 13. Display the file with line numbers.
     ```
@@ -152,11 +152,11 @@ Now that we have created the files, we can go on with the practice sets:
     >```
 14. Write the output of wc -l into lesson01/line_count.txt.
     ```
-    wc -l mini.fastq > lesson01/line_count.txt
+    wc -l mini.fastq > lesson02/line_count.txt
     ```
     > If you only want to print out the number of the lines, use:
     > ```
-    > wc -l < mini.fastq > lesson01/line_count.txt
+    > wc -l < mini.fastq > lesson02/line_count.txt
     > ```
     > This format will only form the number of the lines without stating the file name itself.
 
@@ -229,9 +229,9 @@ Now that we have created the files, we can go on with the practice sets:
    print read, $0}
    ' mini.fastq
    ```
-6. Save all sequence lines into lesson01/sequences.txt.
+6. Save all sequence lines into lesson02/sequences.txt.
    ```
-   awk 'NR%4==2 {print $0}' mini.fastq > lesson01/sequences.txt
+   awk 'NR%4==2 {print $0}' mini.fastq > lesson02/sequences.txt
    ```
 7. Check that every sequence and corresponding quality line have equal lengths.
    ```
