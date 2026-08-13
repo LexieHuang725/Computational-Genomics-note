@@ -293,4 +293,5 @@ Now that we have created the files, we can go on with the practice sets:
    > printf 'Reads: %s\n' "$reads"
    > printf 'First read: %s\n' "$first_read"
    > printf 'Read length: %s\n' "$read_length"
-```
+   > ```
+This code looks confusing because it uses bash commands. We will discuss more about bash command and difference between it and ```awk``` command next lesson. See you there!
