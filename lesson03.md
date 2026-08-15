@@ -234,7 +234,8 @@ print "ERROR", $4 ": nonnumeric coordinate"}
 ' genes_with_error.bed
 ```
 #### Practice 11: create an output file
-From ```genes_with_errors.bed```, create ```valid_genes.tsv``` containing only records that:
+Imagine a file with wrong gene data but also valid gene data, and we want to only collect the valid ones into another file, what could we do?
+Create a file named ```all_genes.bed```, from the file, create ```valid_genes.tsv``` containing only records that:
 * have numeric coordinates;
 * have end greater than start;
 * have expression of at least 10.
@@ -251,3 +252,110 @@ How do we use OFS is that we define the separation symbols using ```OFS``` and s
 *```echo 'a b c' | awk -v OFS='\t' '{$1=$1; print}'```*
 *or*
 *```echo 'a b c' | awk -v OFS='\t' '{print $1, $2, $3}'```*
+After we know how to use ```OFS``` to assign the separation space of each columns, we can now go ahead and create the file:
+```
+awk -v OFS='\t' '
+BEGIN {
+print "feature", "chromosome", "length", "expression"}
+$2 ~/^[0-9]+$/ && $3 ~/^[0-9]+$/ && $3>$2 && $5>=10 {
+print $4, $1, $3-$2, $5}
+' all_genes.bed > valid_genes.tsv
+```
+Perfect! Now practice with other conditions and more!
+
+---
+#### Bash Section: build a bash script one step by another
+To start a bash command, we need to start the entire script with ```#!/bin/bash```. This guides us to the bash command. ```bash``` is a little bit different than that of ```awk```, whether in its format or usage. It might be confusing at first to differentiate these two but we will slowly build our blocks to learn how to use it as a tool.
+
+Here comes the question tho, why *do* we need bash? To make our coding learning harder? To make students suffer? Eh maybe, but the most important part is that bash helps wrapping around the ```awk``` command. Imagine inputing a file that does not exist, bash can help imprint the error so that you understand what's wrong. You can clarify errors, process the file without needing to change your code, have free input to search within files, etc.
+
+"WOW this sounds so cool~ how do we do all these things?" I know, but hold your horses. We gonna start with this specific problem, and expand one by one.
+First, if you remember clearly, we had a mini showcase of bash script at the end of lesson02. In that scenario, we covered the possibility of reporting error of a non-existing file.
+```
+if [! -f "$1"]; then
+echo "FileNotFound: $1"
+exit 1
+fi
+```
+For bash, when you use if, the format is ```if[condition]``` for file name and strings; for regex matching such as matching the column with their strings or symbols, use ```if[[condition]]```.
+```bash``` also gives much more freedom to input the file you want. ```"$1"``` means the first input, in this case, your file. You can also add more input and simply refer to as ```"$2"``` or ```"$3"```. Remember to distinguish it with the column symbol in ```awk```. This always has quote marks.
+
+Now we can print out the ```awk``` command to finish the entire script.
+```
+#!/bin/bash
+if [! -f "$1"]; then
+echo "FileNotFound: $1"
+exit 1
+fi
+
+awk '
+{gene_length=$3-$2
+total+=gene_length}
+END {
+"gene number:", NR
+"total length:", total
+"mean length:", total/NR "bp"}
+' "$1"
+```
+
+Now we want to progress to other conditions that might appear as errors when we input something outside the shell. For example, what if we didn't know how many input we are supposed to put, the order of the input, or if we had a typo.
+
+#### Final challenge: bed_report.sh
+Final part of this lesson is a long bash script that covers detailed possible errors.
+Your awk program must:
+* Select the requested chromosome.
+* Require length to be at least the requested minimum.
+* Count matching features.
+* Accumulate their total length.
+* Calculate their mean length.
+* Avoid dividing by zero when nothing matches.
+* Require three input, and the minimal length has to be numeric
+* Chromosome must starts with "chr"
+The zero-matching output should look like:
+```
+Matching features: 0
+No mean can be calculated.
+```
+Think about this question before rush and see the answer. You can also try see if you could cover more errors in your script.
+```diff
+#!/bin/bash
+if [! -f "$1"]; then
+echo "FileNotFound $1"
+exit 1
+fi
+
++# Now we check the number of our inputs. "$#" means the number of the inputs we have; ne means not equal, and 3 means that we want three inputs.
+if [ "$#" ne 3 ]; then
+echo "Usage: $0 File Chromosome MinimumLength"
+exit 1
+fi
+
++# Now we want to check if the input of chromosome starts with "chr"
+if [[ ! "$2" =~ ^chr ]]; then
+echo "Chromosome name must begin with chr"
+exit 1
+fi
+
++# Now we want to make sure the minimal length input is numeric
+if [[! "$3" =~ ^[0+9]+$ ]]; then
+echo "minimum length must be a number"
+exit 1
+fi
+
+awk -v chr="$2" -v minimum="$3" '
+$1=chr && $3-$2>=minimum {
+total_length += $3-$2
+count++
+}
+END {
+if count>0 {
+printprint "Chromosome:", chromosome
+print "Minimum length:", minimum "bp"
+print "Matched genes:", count
+print "Total matching length:", total_length
+print "Mean matching length:", total_length/count}
+} else {
+print "Matching features:", count
+print"No mean can be calculated."}
+' "$1"
+```
