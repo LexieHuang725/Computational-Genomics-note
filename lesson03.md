@@ -17,13 +17,13 @@ Use your skill to create this file and save it into ```lesson03/genes.bed```
 Now we have our file, notice this file has several columns and rows. For Unix, when we have a file like this, we can use ```$number``` to track down or refer to a certain column.
 For example, if we want to print the entire input line, we can use ```$0```; first column is ```$1``` and so on.
 > For this bed file, we can see that:
-> |$1|chromosome number|
-> |--|-----------------|
-> |$2|start point|
-> |$3|end point|
-> |$4|gene number|
-> |$5|expression|
-> |$6|strand charge|
+> |`$1`|chromosome number|
+> |:--:|:---------------:|
+> |`$2`|start point|
+> |`$3`|end point|
+> |`$4`|gene number|
+> |`$5`|expression|
+> |`$6`|strand charge|
 ---
 #### Practice 1: try to only display the chromosome number and their gene features.
 ```
@@ -233,3 +233,21 @@ $3 !~/^[0-9]+$/ || $2 !~/^[0-9]+$/ {
 print "ERROR", $4 ": nonnumeric coordinate"}
 ' genes_with_error.bed
 ```
+#### Practice 11: create an output file
+From ```genes_with_errors.bed```, create ```valid_genes.tsv``` containing only records that:
+* have numeric coordinates;
+* have end greater than start;
+* have expression of at least 10.
+
+Output four tab-separated columns:
+```
+feature	chromosome	length	expression
+geneA  chr1  100  15
+...
+```
+To format the columns with ```tab``` space, we can use something called "Output Field Separator", in command as ```OFS```.
+How do we use OFS is that we define the separation symbols using ```OFS``` and store it as value in ```awk```.
+*For example: we want to print out a b c with separation space of ```tab```, we can do:*
+*```echo 'a b c' | awk -v OFS='\t' '{$1=$1; print}'```*
+*or*
+*```echo 'a b c' | awk -v OFS='\t' '{print $1, $2, $3}'```*
