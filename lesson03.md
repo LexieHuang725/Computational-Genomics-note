@@ -214,6 +214,7 @@ ERROR badGene2: end <= start
 ERROR badGene3: nonnumeric coordinate
 ```
 We can define two conditions using ```if``` or just awk condition depends on your preference. Try to practice by yourself without looking at the answer.
+> Hint: to make sure something is numerical, we use ```~/condition/``` to check. ```^``` checks if the line begin with certain things, and ```$``` checks the end.
 ```
 awk '
 {if ($3<=$2) {
