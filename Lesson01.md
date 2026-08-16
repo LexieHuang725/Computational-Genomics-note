@@ -125,9 +125,9 @@ The output would show how many times each line displays:
 ```
    1 hello
    1 i am the king
-   1 idk why people took golden shpwer
+   1 idk why people took golden shower
    1 ik they stink asf tho
-   2 maybe they need amonia
+   2 maybe they lack amonia
 ```
 
 #### gzip/gunzip/gzcat/zcat
