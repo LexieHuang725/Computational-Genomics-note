@@ -65,3 +65,10 @@ This distinction appears constantly in genomics:
 * repeat coverage;
 * genomic territory covered by annotations.
 
+#### Validate the coordinates first
+
+Before doing crazy math, check errors of files and data first:
+* check if the file exists
+* check if the start point/end point is numeric
+* check if start point is bigger than end point
+* check if the length is zero
