@@ -1,4 +1,4 @@
-### Lesson03
+## Lesson03
 ---
 For today, we are gonna introduce a new file format: ```.bed```. This file can show a matrix of gene with chromosomes they are in, charge of their DNA strand, start bp and end bp, and the feature numbers.
 We can start with creating a mini ```gene.bed```:
@@ -25,7 +25,7 @@ For example, if we want to print the entire input line, we can use ```$0```; fir
 > |`$5`|expression|
 > |`$6`|strand charge|
 ---
-#### Practice 1: try to only display the chromosome number and their gene features.
+### Practice 1: try to only display the chromosome number and their gene features.
 ```
 awk '{print $1, $4}' genes.bed
 ```
@@ -40,7 +40,7 @@ chr1 geneF
 chr2 geneG
 chrX geneH
 ```
-#### Practice 2: find the genes input lines on chromosome 2.
+### Practice 2: find the genes input lines on chromosome 2.
 > hint: try to only look for the lines which the column matches the chromosome number
 ```
 awk '$1=="chr2" {print $0}' genes.bed
@@ -51,7 +51,7 @@ chr2	300	380	geneC	8	+
 chr2	800	1200	geneD	67	-
 chr2	1500	1600	geneG	5	-
 ```
-#### Practice 3: reformat the file:
+### Practice 3: reformat the file:
 In this problem, try to make your output look like this:
 ```
 geneA: chr1:100-200 (+)
@@ -62,7 +62,7 @@ Let's figure it out:
 ```
 awk '$1=="chr1" {print $4 ":", $1 ":", $2 "-" $3, "(" $6 ")"}' genes.bed
 ```
-#### Practice 4: Require two biological conditions
+### Practice 4: Require two biological conditions
 Try to print the name, interval length, and expression of every feature that:
 * is longer than or equal to 100 bp;
 * has expression greater than 20.
@@ -80,7 +80,7 @@ geneD
 geneF
 geneH
 ```
-#### Practice 5: boundary trap
+### Practice 5: boundary trap
 Print the genes whose lengths are strictly between 100bp and 400bp, meaning that their lengths must be greater than 100bp but smaller than 400bp.
 Still, we use ```&&```:
 ```
@@ -91,7 +91,7 @@ print $4}
 ```
 Only geneB should match the requirements.
 
-#### Practice 6: counting without printing every match
+### Practice 6: counting without printing every match
 Try to count the number of negative strands and positive strands in the file. Since counting is cumulative, we shall use ```count++``` to count the total numbers, and remember to use ```END``` we learned from last class to print the final result instead of printing everytime the count goes up.
 ```
 awk '
@@ -123,7 +123,7 @@ print "positive features:", count_pos
 > ```
 > Should have the same output.
 
-#### Practice 7: calculate specific chromosome genes mean length
+### Practice 7: calculate specific chromosome genes mean length
 Now try to calculate gene average lengths of chromosome 1.
 ```
 awk '
@@ -140,7 +140,7 @@ print "mean length:", total_length/count
 ```
 *Brainstorm: what if we want to change the chromosome, what if we want to command another chromosome without need to change the code? What can we do? We will discuss this later when I introduce```bash``` command later in this lesson.*
 
-#### Practice 8.1: find the longest gene
+### Practice 8.1: find the longest gene
 For this problem, use the ```awk``` command to find the *first* gene with the longest length.
 Inside the main block:
 * Calculate the current length.
@@ -161,7 +161,7 @@ print "The longest feature:", gene, maximum "bp"}
 ```
 *Think about what you should do if we wanted to print out the *last* gene with the longest length.
 
-#### Practice 8.2: find the shortest gene
+### Practice 8.2: find the shortest gene
 For this problem, use ```awk``` to find the *first* gene with the shortest length.
 * Without assigning a value, ```minimum``` will always be 0, therefore, if we only change ```>``` to ```<```, this time it won't work. What we can do is that we can assign the first line value to the minimum by using ```or``` statement, which writes as ```||``` in ```awk``` command.
 ```
@@ -175,7 +175,7 @@ END {
 print "The shortest feature:", gene, shortest "bp"}
 ' genes.bed
 ```
-#### Practice 9: report every longest feature
+### Practice 9: report every longest feature
 Now that we want to report every longest feature in the file, we want to print everytime we see a gene with the longest length. What we are gonna do here is that we want to store the longest length as a value first, and then use ```awk``` to match each gene with the value.
 How do we store something as a variable with value so that we can use it later? We can use define command to define an entire ```awk``` command first, because we can't know what is the longest length until walking through the entire bed file. When defining with ```awk``` command, we use ```awk=$(awk '...' file.format)```.
 Therefore, the first part, which is the defining part would be like:
@@ -200,7 +200,7 @@ print $4, max "bp"}
 ```
 There, you now learned how to define a value and then acquire the matching features using the values stored.
 
-#### Practice 10: detect genes with errors
+### Practice 10: detect genes with errors
 Sometimes not everything is peachy and perfect. It is normal for a gene dataset to have small issues, such as negative length, nonnumeric values, etc. We will start with a mini file with errors of the data. Copy the data below and save it into a file named ```genes_with_error.bed```.
 ```
 chr3	500	400	badGene1	18	+
@@ -234,7 +234,7 @@ $3 !~/^[0-9]+$/ || $2 !~/^[0-9]+$/ {
 print "ERROR", $4 ": nonnumeric coordinate"}
 ' genes_with_error.bed
 ```
-#### Practice 11: create an output file
+### Practice 11: create an output file
 Imagine a file with wrong gene data but also valid gene data, and we want to only collect the valid ones into another file, what could we do?
 Create a file named ```all_genes.bed```, from the file, create ```valid_genes.tsv``` containing only records that:
 * have numeric coordinates;
@@ -265,7 +265,7 @@ print $4, $1, $3-$2, $5}
 Perfect! Now practice with other conditions and more!
 
 ---
-#### Bash Section: build a bash script one step by another
+### Bash Section: build a bash script one step by another
 To start a bash command, we need to start the entire script with ```#!/bin/bash```. This guides us to the bash command. ```bash``` is a little bit different than that of ```awk```, whether in its format or usage. It might be confusing at first to differentiate these two but we will slowly build our blocks to learn how to use it as a tool.
 
 Here comes the question tho, why *do* we need bash? To make our coding learning harder? To make students suffer? Eh maybe, but the most important part is that bash helps wrapping around the ```awk``` command. Imagine inputing a file that does not exist, bash can help imprint the error so that you understand what's wrong. You can clarify errors, process the file without needing to change your code, have free input to search within files, etc.
@@ -301,7 +301,7 @@ END {
 
 Now we want to progress to other conditions that might appear as errors when we input something outside the shell. For example, what if we didn't know how many input we are supposed to put, the order of the input, or if we had a typo.
 
-#### Final challenge: bed_report.sh
+### Final challenge: bed_report.sh
 Final part of this lesson is a long bash script that covers detailed possible errors.
 Your awk program must:
 * Select the requested chromosome.
