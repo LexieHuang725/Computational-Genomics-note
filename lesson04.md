@@ -1,4 +1,4 @@
-### Lesson04: Sorting and merging genomic intervals
+## Lesson04: Sorting and merging genomic intervals
 ---
 Lesson 03 introduced ```.bed``` file format. Lesson 04 focuses on a more complicated problem:
 
@@ -10,7 +10,7 @@ Simply adding interval lengths gives the wrong answer when regions overlap. We m
 * merge overlapping intervals;
 * calculate unique coverage for peaks in chromosomes.
 
-#### Practice data
+### Practice data
 Create a file named regions.bed:
 ```
 chr2	300	420	peakF
@@ -33,7 +33,7 @@ The columns are:
 |$3|End coordinate|
 |$4|Region name|
 ---
-#### Why overlap changes the calculation
+### Why overlap changes the calculation
 Consider:
 ```
 chr1	100	200	peakA
@@ -65,7 +65,7 @@ This distinction appears constantly in genomics:
 * repeat coverage;
 * genomic territory covered by annotations.
 
-#### Validate the coordinates first
+### Validate the coordinates first
 
 Before doing crazy math, check errors of files and data first:
 * check if the file exists
