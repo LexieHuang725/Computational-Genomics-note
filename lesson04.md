@@ -469,7 +469,7 @@ $1 < previous_chr ||
 ### Problem 4 — Find the most redundant chromosome
 For each chromosome, calculate:
 ```
-redundant bp=naive interval bp−unique merged bp
+redundant bp = naive interval bp − unique merged bp
 ```
 Expected values include:
 ```
@@ -567,5 +567,51 @@ Your script must:
 The difficult part is that the original and merged datasets contain different information. You must decide how to preserve the naïve totals and original counts while separately calculating merged totals and counts.
 
 ```
-
+awk '
+$2~ /^[0-9]+$/ && $3~ /^[0-9]+$/ && $3>$2
+' regions.bed |
+sort -k1,1 -k2,2n |
+awk '
+BEGIN {
+OFS="\t"
+print "chromosome", "original_intervals", "merged_intervals", "naive_bp", "unique_bp", "redundant_bp"
+}
+NR==1 {
+chr=$1
+start=$2
+end=$3
+org_interval=1
+merged_int=0
+naive=$3-$2
+next
+}
+$1==chr {
+naive+=$3-$2
+org_interval++
+if ($2<=end) {
+end=$3
+merged_int++
+} else {
+unique_interval+=end-start
+end=$3
+start=$2
+}
+next
+}
+{
+unique=unique_interval+end-start
+print chr, org_interval, merged_int, naive, unique, naive-unique
+chr=$1
+start=$2
+end=$3
+org_interval=1
+merged_int=0
+naive=$3-$2
+unique_interval=0
+}
+END {
+unique=unique_interval+end-start
+print chr, org_interval, merged_int, naive, unique, naive-unique
+}
+'
 ```
