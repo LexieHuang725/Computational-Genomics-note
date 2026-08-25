@@ -264,6 +264,7 @@ The task for this problem would be:
 * calculate unique coverage of each chromosome
 * count the number of intervals
 * list peaks within each of the chromosome regions
+
 ```diff
 awk '
 $2~/^[0-9]+$/ && $3~/^[0-9]+$/ && $3>$2
@@ -332,6 +333,27 @@ Valid intervals: 8
 * Do not print individual records.
 * Use next to keep the categories mutually exclusive.
 
+```
+awk '{
+if ($2!~/^[0-9]+$/ || $3!~/^[0-9]+$/) {
+count_nonnum++
+} else {
+if ($3=$2) {
+count_zero++
+} else if ($3<$2) {
+count_reverse++
+} else {
+count_valid++}
+}
+}
+END {
+print "Nonnumeric coordinates:", count_nonnum
+print "Zero-length intervals:", count_zero
+print "Reversed intervals:", count_reverse
+print "Valid intervals:", count_valid
+}
+' regions.bed
+```
 ---
 ### Problem 2 — Preserve rejected records
 Create two output files in one awk command:
@@ -347,6 +369,31 @@ badText	nonnumeric
 ```
 Question: what problem might occur if you rerun the command and the old files still exist?
 
+```
+#!/bin/bash
+awk '
+$2~/^[0-9]+$/ && $3~/^[0-9]+$/ && $3>$2 {
+print $0
+}
+' "$1" > "$2"
+
+awk '{
+if ($2!~/^[0-9]+$/ || $3!~/^[0-9]+$/) {
+nonnum = $4
+} else {
+if ($3<$2) {
+reversed = $4
+} else if ($3==$2) {
+zero_length = $4}
+}
+}
+END {
+print nonnum, "nonnumeric"
+print reversed, "reversed"
+print zero_length, "zero_length"
+}
+' "$1" > "$3"
+```
 ---
 ### Problem 3 — Detect unsorted input
 Write an awk program that examines a BED file and reports any record that violates chromosome/start ordering.
@@ -363,6 +410,60 @@ The current record is out of order if:
 * its chromosome sorts before the preceding chromosome; or
 * it has the same chromosome but a smaller start coordinate.
 This problem is about comparing consecutive records, not sorting them.
+
+```
+awk '
+$2~/^[0-9]+$/ && $3~/^[0-9]+$/
+' regions.bed |
+awk '
+BEGIN {
+OFS="\t"
+}
+NR==1 {
+chr = $1
+start = $2
+next
+}
+{
+if ($1==chr) {
+if ($2<start) {
+print "UNSORTED at line " NR ":", $1, $2
+} else {
+start = $2}
+}
+else if ($1<chr) {
+print "UNSORTED at line " NR ":", $1, $2
+}
+chr=$1
+start=$2
+}
+'
+```
+or simpler:
+```
+awk '
+BEGIN {
+    OFS = "\t"
+}
+$2 !~ /^[0-9]+$/ || $3 !~ /^[0-9]+$/ {
+    next
+}
+!have_previous {
+    previous_chr = $1
+    previous_start = $2
+    have_previous = 1
+    next
+}
+$1 < previous_chr ||
+($1 == previous_chr && $2 < previous_start) {
+    print "UNSORTED at line " NR ":", $1, $2
+}
+{
+    previous_chr = $1
+    previous_start = $2
+}
+' regions.bed
+```
 
 ---
 ### Problem 4 — Find the most redundant chromosome
@@ -382,6 +483,65 @@ Most redundant chromosome: chr2 50 bp
 ```
 You may use intermediate files, but the stronger solution uses two pipelines and associative arrays.
 
+```diff
+awk '
+$2~ /^[0-9]+$/ && $3~ /^[0-9]+$/ && $3>$2
+' regions.bed |
+sort -k1,1 -k2,2n |
+awk '
+BEGIN {
+OFS="\t"
+}
+NR==1 {
+chr=$1
+start=$2
+end=$3
+naive=end-start
+next
+}
+$1 == chr {
+naive+=$3-$2
+if ($2 <= end) {
+end=$3
+} else {
+unique_interval+=end-start
+end=$3
+start=$2
+}
+next
+}
+
++###print out the rows of chr and redundent bp lengths. Then compare the dedundent lengths.
+{
+unique = unique_interval+end-start
+redundent = naive - unique
+print chr, redundent
+if (!have_max || redundent > maximum_red) {
+maximum_red = redundent
+max_chr = chr
+have_max = 1
+}
++###reset the variables after printing
+chr=$1
+start=$2
+end=$3
+naive = $3 - $2
+unique_interval=0
+}
+END {
+if (NR > 0) {
+unique = unique_interval + end - start
+redundent = naive - unique
+print chr, redundent
+if (!have_max || redundent > maximum_red) {
+maximum_red = redundent
+max_chr = chr
+}
+print "max:", max_chr, maximum_red
+}
+}
+'
+```
 ---
 ## Final challenge — Coverage report script
 Write ```genome_coverage.sh```
@@ -405,3 +565,7 @@ Your script must:
 * avoid leaving temporary files behind if you choose a pipeline-only design;
 * produce a meaningful message when no valid intervals exist.
 The difficult part is that the original and merged datasets contain different information. You must decide how to preserve the naïve totals and original counts while separately calculating merged totals and counts.
+
+```
+
+```
