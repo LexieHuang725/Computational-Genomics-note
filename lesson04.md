@@ -258,7 +258,7 @@ for (key in array) {
 In this case, chr is a new variable we create along the way, and the ```awk``` command recognize it as we formally define of the coverage. Going through the different keys makes the code walks through different chromosomes. You can also sort the chromosomes by order.
 
 
-### Practice — Build ```unique_coverage.sh```
+### Practice 3 — Build ```unique_coverage.sh```
 Now we want to calculate the unique coverage of each chromosome from the original file. We can use the same method without the for loop to sum up the coverage together without overlap and gap.
 The task for this problem would be:
 * calculate unique coverage of each chromosome
